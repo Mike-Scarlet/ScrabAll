@@ -12,13 +12,27 @@ logging.basicConfig(
 from scrab_browser.selenium_driver_retrieve import GetDefaultSeleniumDriver
 from scrab_browser.websites.baidu_pan.login import GuaranteeBaiduPanLogin
 from scrab_browser.websites.baidu_pan.get_shared_link import GetSharedLink
+from scrab_browser.websites.baidu_pan.shared_link_navigation import *
+
 
 driver = GetDefaultSeleniumDriver()
+
+# GuaranteeBaiduPanLogin(driver)
 
 baidu_share_url = "https://pan.baidu.com/s/1flqi_JjQRHhCvtN-JJHUJA"
 GetSharedLink(driver, baidu_share_url, "yezi")
 
+print("current shared link path: ", GetCurrentSharedLinkPath(driver))
 
+cslf = ListCurrentSharedLinkFiles(driver)
+print(cslf)
+
+AccessFolder(driver, cslf[0][0])
+
+print("current shared link path: ", GetCurrentSharedLinkPath(driver))
+
+cslf = ListCurrentSharedLinkFiles(driver)
+print(cslf)
 
 # # 打开网页
 # driver.get("https://pan.baidu.com/disk/main#/index")

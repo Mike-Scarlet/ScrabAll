@@ -1,1 +1,3 @@
 Selenium
+beautifulsoup4
+lxml
