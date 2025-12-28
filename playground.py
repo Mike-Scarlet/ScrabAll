@@ -27,7 +27,7 @@ print("current shared link path: ", BaiduPanSharedLinkNavigation.GetCurrentShare
 cslf = BaiduPanSharedLinkNavigation.ListCurrentSharedLinkFiles(driver)
 print(cslf)
 
-BaiduPanSharedLinkNavigation.AccessFolder(driver, cslf[0][0])
+BaiduPanSharedLinkNavigation.AccessFolder(driver, cslf[0].name)
 
 print("current shared link path: ", BaiduPanSharedLinkNavigation.GetCurrentSharedLinkPath(driver))
 
@@ -40,6 +40,8 @@ cslf = BaiduPanSharedLinkNavigation.ListCurrentSharedLinkFiles(driver)
 print(cslf)
 
 BaiduPanSharedLinkNavigation.ReturnToPrevFolder(driver)
+
+BaiduPanSharedLinkNavigation.SelectFiles(driver, ["2024", "2025"])
 
 # # 打开网页
 # driver.get("https://pan.baidu.com/disk/main#/index")
