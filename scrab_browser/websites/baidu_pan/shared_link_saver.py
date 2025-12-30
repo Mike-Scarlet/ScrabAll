@@ -1,33 +1,65 @@
 import time
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
 
-class FileTreeNavigator:
-    def __init__(self, driver, dialog=None):
-        """
-        初始化文件树导航器
-        
-        Args:
-            driver: Selenium WebDriver
-            dialog: 文件树对话框元素，如果为None则自动查找
-        """
+class SharedLinkSaver:
+    def __init__(self, driver: webdriver.Chrome):
         self.driver = driver
-        self.dialog = dialog or self._find_dialog()
+        self.dialog = None
+        
+    def has_save_dialog(self):
+        try:
+            self.driver.find_element(By.ID, "fileTreeDialog")
+            return True
+        except NoSuchElementException:
+            return False
+
+    def open_save_dialog(self):
+        if self.has_save_dialog():
+            return
+        self.driver.find_element(By.CSS_SELECTOR, "div[class='bottom-save-path-icon']").click()
+        self.dialog = self._find_dialog()
+
+    def confirm_selection(self):
+        try:
+            confirm_btn = self.dialog.find_element(
+                By.CSS_SELECTOR, 
+                "a[node-type='confirm']"
+            )
+            confirm_btn.click()
+            self.dialog = None
+            return True
+        except Exception as e:
+            print(f"click confirm button failed: {e}")
+            return False
+    
+    def cancel_selection(self):
+        try:
+            cancel_btn = self.dialog.find_element(
+                By.CSS_SELECTOR, 
+                "a[node-type='cancel']"
+            )
+            cancel_btn.click()
+            self.dialog = None
+            return True
+        except Exception as e:
+            print(f"click cancel button failed: {e}")
+            return False
         
     def _find_dialog(self):
-        """查找文件树对话框"""
         try:
             return WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located((By.ID, "fileTreeDialog"))
             )
         except TimeoutException:
-            # 如果ID找不到，尝试通过class查找
-            dialogs = self.driver.find_elements(By.CSS_SELECTOR, ".dialog-fileTreeDialog")
-            if dialogs:
-                return dialogs[0]
-            raise Exception("文件树对话框未找到")
+            # # 如果ID找不到，尝试通过class查找
+            # dialogs = self.driver.find_elements(By.CSS_SELECTOR, ".dialog-fileTreeDialog")
+            # if dialogs:
+            #     return dialogs[0]
+            raise Exception("cannot find file tree dialog")
     
     def navigate_to_path(self, target_path, create_if_missing=True, timeout=10):
         """
@@ -41,12 +73,12 @@ class FileTreeNavigator:
         Returns:
             tuple: (是否成功, 最后处理的节点元素, 错误信息)
         """
+        if self.dialog is None:
+            raise RuntimeError("retrieve file tree dialog before navigate")
+
         if not target_path or target_path == "/":
             return True, None, "根路径"
             
-        # 确保对话框可见
-        self._ensure_dialog_visible()
-        
         # 解析路径
         parts = [p for p in target_path.strip("/").split("/") if p]
         if not parts:
@@ -90,13 +122,6 @@ class FileTreeNavigator:
             
         except Exception as e:
             return False, current_node, f"导航失败: {str(e)}"
-    
-    def _ensure_dialog_visible(self):
-        """确保对话框可见"""
-        if not self.dialog.is_displayed():
-            # 可能需要点击某些按钮来显示对话框
-            # 这里可以添加显示对话框的逻辑
-            pass
     
     def _find_child_node_by_name(self, folder_name, parent_path="/"):
         """
@@ -282,29 +307,3 @@ class FileTreeNavigator:
             return selected_node.get_attribute("node-path")
         except:
             return "/"
-    
-    def confirm_selection(self):
-        """点击确定按钮"""
-        try:
-            confirm_btn = self.dialog.find_element(
-                By.CSS_SELECTOR, 
-                "a[node-type='confirm']"
-            )
-            confirm_btn.click()
-            return True
-        except Exception as e:
-            print(f"点击确定按钮失败: {e}")
-            return False
-    
-    def cancel_selection(self):
-        """点击取消按钮"""
-        try:
-            cancel_btn = self.dialog.find_element(
-                By.CSS_SELECTOR, 
-                "a[node-type='cancel']"
-            )
-            cancel_btn.click()
-            return True
-        except Exception as e:
-            print(f"点击取消按钮失败: {e}")
-            return False

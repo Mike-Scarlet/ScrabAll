@@ -13,7 +13,7 @@ from scrab_browser.selenium_driver_retrieve import GetDefaultSeleniumDriver
 from scrab_browser.websites.baidu_pan.login import BaiduPanLogin
 from scrab_browser.websites.baidu_pan.get_shared_link import BaiduPanSharedLink
 from scrab_browser.websites.baidu_pan.shared_link_navigation import BaiduPanSharedLinkNavigation
-from scrab_browser.websites.baidu_pan.shared_link_saver import SharedLinkSaver
+
 
 driver = GetDefaultSeleniumDriver()
 
@@ -22,10 +22,27 @@ driver = GetDefaultSeleniumDriver()
 baidu_share_url = "https://pan.baidu.com/s/1flqi_JjQRHhCvtN-JJHUJA"
 BaiduPanSharedLink.GetSharedLink(driver, baidu_share_url, "yezi")
 
-saver = SharedLinkSaver(driver)
-saver.open_save_dialog()
+print("current shared link path: ", BaiduPanSharedLinkNavigation.GetCurrentSharedLinkPath(driver))
 
-saver.navigate_to_path("/扒/test/test1")
+cslf = BaiduPanSharedLinkNavigation.ListCurrentSharedLinkFiles(driver)
+print(cslf)
+
+BaiduPanSharedLinkNavigation.AccessFolder(driver, cslf[0].name)
+
+print("current shared link path: ", BaiduPanSharedLinkNavigation.GetCurrentSharedLinkPath(driver))
+
+cslf = BaiduPanSharedLinkNavigation.ListCurrentSharedLinkFiles(driver)
+print(cslf)
+
+BaiduPanSharedLinkNavigation.AccessFolder(driver, "2025")
+
+cslf = BaiduPanSharedLinkNavigation.ListCurrentSharedLinkFiles(driver)
+print(cslf)
+
+BaiduPanSharedLinkNavigation.ReturnToPrevFolder(driver)
+
+BaiduPanSharedLinkNavigation.SelectFiles(driver, ["2024", "2025"])
+
 
 input()
 
