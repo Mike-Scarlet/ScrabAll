@@ -25,7 +25,10 @@ BaiduPanSharedLink.GetSharedLink(driver, baidu_share_url, "yezi")
 saver = SharedLinkSaver(driver)
 saver.open_save_dialog()
 
-saver.navigate_to_path("/扒/test/test1")
+nav_result = saver.navigate_to_path("/扒/test/test1")
+# if nav_result[0]:
+#     save_stat = saver.confirm_selection()
+#     print(save_stat)
 
 input()
 
