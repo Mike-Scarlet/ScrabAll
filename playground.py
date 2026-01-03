@@ -10,25 +10,19 @@ logging.basicConfig(
 )
 
 from scrab_browser.selenium_driver_retrieve import GetDefaultSeleniumDriver
-from scrab_browser.websites.baidu_pan.login import BaiduPanLogin
-from scrab_browser.websites.baidu_pan.get_shared_link import BaiduPanSharedLink
-from scrab_browser.websites.baidu_pan.shared_link_navigation import BaiduPanSharedLinkNavigation
-from scrab_browser.websites.baidu_pan.shared_link_saver import SharedLinkSaver
+# from scrab_browser.websites.baidu_pan.login import BaiduPanLogin
+# from scrab_browser.websites.baidu_pan.get_shared_link import BaiduPanSharedLink
+# from scrab_browser.websites.baidu_pan.shared_link_navigation import BaiduPanSharedLinkNavigation
+# from scrab_browser.websites.baidu_pan.shared_link_saver import SharedLinkSaver
+from scrab_browser.websites.cangku.login import CangkuLogin
+from scrab_browser.websites.cangku.walk_cangku_user_post import WalkCangkuUserPost
 
 driver = GetDefaultSeleniumDriver()
 
-# BaiduPanLogin.GuaranteeBaiduPanLogin(driver)
+# CangkuLogin.GuaranteeCangkuLogin(driver)
 
-baidu_share_url = "https://pan.baidu.com/s/1flqi_JjQRHhCvtN-JJHUJA"
-BaiduPanSharedLink.GetSharedLink(driver, baidu_share_url, "yezi")
-
-saver = SharedLinkSaver(driver)
-saver.open_save_dialog()
-
-nav_result = saver.navigate_to_path("/扒/test/test1")
-# if nav_result[0]:
-#     save_stat = saver.confirm_selection()
-#     print(save_stat)
+walk_cangku_user_post = WalkCangkuUserPost(driver)
+walk_cangku_user_post.GetUserPostLinks("309550", 2)
 
 input()
 
