@@ -1,6 +1,5 @@
 
-
-import time, sys, os
+import asyncio, os
 
 from python_general_lib.environment_setup.logging_setup import *
 logging.basicConfig(
@@ -9,25 +8,29 @@ logging.basicConfig(
     # datefmt="[%X]",
 )
 
-from scrab_browser.selenium_driver_retrieve import GetDefaultSeleniumDriver
-# from scrab_browser.websites.baidu_pan.login import BaiduPanLogin
-# from scrab_browser.websites.baidu_pan.get_shared_link import BaiduPanSharedLink
-# from scrab_browser.websites.baidu_pan.shared_link_navigation import BaiduPanSharedLinkNavigation
-# from scrab_browser.websites.baidu_pan.shared_link_saver import SharedLinkSaver
-from scrab_browser.websites.cangku.login import CangkuLogin
-from scrab_browser.websites.cangku.walk_cangku_user_post import WalkCangkuUserPost
+from scrab_browser.playwright_browser_retrieve import GetWrapPlaywrightBrowserContext
+from scrab_browser.websites.baidu_pan.login import BaiduPanLogin
+from scrab_browser.websites.baidu_pan.get_shared_link import BaiduPanSharedLink
+# from playwright.sync_api import sync_playwright
+from playwright.async_api import async_playwright
 
-driver = GetDefaultSeleniumDriver()
+async def main():
+  async with async_playwright() as p:
+    context = await GetWrapPlaywrightBrowserContext(p)
 
-# CangkuLogin.GuaranteeCangkuLogin(driver)
+    # await BaiduPanLogin.GuaranteeBaiduPanLogin(context)
 
-walk_cangku_user_post = WalkCangkuUserPost(driver)
-walk_cangku_user_post.GetUserPostLinks("309550", 2)
+    baidu_share_url = "https://pan.baidu.com/s/1flqi_JjQRHhCvtN-JJHUJA"
+    shared_link_page = await BaiduPanSharedLink.GetSharedLink(
+        context, baidu_share_url, "yezi")
 
-input()
+    # await page.goto("https://example.com")
 
-# 等待3秒
-time.sleep(3)
+    # title = await page.title()
+    # print(f"页面标题: {title}")
 
-# 关闭浏览器
-driver.quit()
+    input()
+
+    await context.close()
+
+asyncio.run(main())

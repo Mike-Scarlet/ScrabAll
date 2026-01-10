@@ -1,20 +1,23 @@
 
-from selenium import webdriver
+from playwright.async_api import BrowserContext
 import logging
 
 class BaiduPanLogin:
   @staticmethod
-  def GuaranteeBaiduPanLogin(driver: webdriver.Chrome):
-    while True:
-      driver.get("https://pan.baidu.com/disk/main#/index")
-      
-      logging.info(f"logging baidu yun, title: {driver.title}")
-      logging.info(f"current url: {driver.current_url}")
+  async def GuaranteeBaiduPanLogin(context: BrowserContext):
+    page = await context.new_page()
     
-      if not driver.current_url.startswith("https://pan.baidu.com/login"):
+    while True:
+      await page.goto("https://pan.baidu.com/disk/main#/index")
+      
+      logging.info(f"logging baidu yun, title: {await page.title()}")
+      logging.info(f"current url: {page.url}")
+    
+      if not page.url.startswith("https://pan.baidu.com/login"):
         break
 
       logging.info("wait for login, press enter after login")
       input()
 
-    logging.info("login success")
+    logging.info("baidu pan login success")
+    await page.close()

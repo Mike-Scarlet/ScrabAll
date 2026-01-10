@@ -3,3 +3,4 @@ chrome/
 browser_session/
 __pycache__/
 *.txt
+*.png

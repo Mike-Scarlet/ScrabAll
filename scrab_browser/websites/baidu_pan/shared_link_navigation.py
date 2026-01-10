@@ -152,7 +152,6 @@ class BaiduPanSharedLinkNavigation:
     WaitAfterClick(0.2)
     WaitForPageLoad(driver)
     
-  # TODO: navigate dialog
     
   """
   Simple judgement
