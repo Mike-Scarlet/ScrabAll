@@ -33,12 +33,12 @@ class SharedLinkSaver:
     try:
       confirm_btn = dialog.locator("a[node-type='confirm']").first
       await confirm_btn.click()
-      await asyncio.sleep(5.0)
+      await asyncio.sleep(2.0)
       
       try:
         success_element = await self.page.wait_for_selector(
           "xpath=//div[@class='info-section-title' and text()='保存成功']",
-          timeout=5000
+          timeout=8000
         )
         if success_element:
           return True
