@@ -1,6 +1,7 @@
 
 import logging
 from playwright.async_api import BrowserContext, Page
+from scrab_browser.websites.baidu_pan.predicates import WaitForBaidupanSharedLinkStable
   
 class BaiduPanSharedLink:
   @staticmethod
@@ -23,6 +24,7 @@ class BaiduPanSharedLink:
       page = await context.new_page()
       await page.goto(shared_link_url)
       await page.wait_for_load_state("domcontentloaded")
+      # await page.wait_for_load_state("load")
 
       if await BaiduPanSharedLink.IsInRequirePasswordPage(page):
         if password is None:
@@ -38,7 +40,7 @@ class BaiduPanSharedLink:
         submit_button = page.locator("#submitBtn")
         await submit_button.click()
         
-        await page.wait_for_load_state("load", timeout=60000)
+        await WaitForBaidupanSharedLinkStable(page)
       
       if await BaiduPanSharedLink.IsInRequirePasswordPage(page):
         logging.error("password error")
