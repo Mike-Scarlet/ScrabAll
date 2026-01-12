@@ -12,7 +12,7 @@ logging.basicConfig(
 from playwright.async_api import async_playwright
 from scrab_browser.playwright_browser_retrieve import GetWrapPlaywrightBrowserContext, ProxySettings
 from scrab_browser.websites.cangku.login import CangkuLogin
-from scrab_browser.websites.cangku.user_specific.yejiang_scrab import YejiangScrab
+from scrab_browser.websites.cangku.walk_cangku_user_post import WalkCangkuUserPost
 
 
 async def main():
@@ -23,8 +23,10 @@ async def main():
 
     context = await GetWrapPlaywrightBrowserContext(p, proxy_setting)
 
-    yejiang_scrab = YejiangScrab(context)
-    get_result = await yejiang_scrab.Run()
+    # page = await CangkuLogin.GuaranteeCangkuLogin(context)
+
+    walk_cangku_user_post = WalkCangkuUserPost(context)
+    get_result = await walk_cangku_user_post.GetUserPostLinks("309550", 2)
     print(get_result)
 
     print("done")

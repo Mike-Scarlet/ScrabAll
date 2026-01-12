@@ -1,21 +1,24 @@
 
-from scrab_browser.websites.cangku.cangku_def import CangkuDef
-from selenium import webdriver
 import logging
+from playwright.async_api import BrowserContext, Page
+from scrab_browser.websites.cangku.cangku_def import CangkuDef
 
 class CangkuLogin:
   @staticmethod
-  def GuaranteeCangkuLogin(driver: webdriver.Chrome):
-    while True:
-      driver.get(CangkuDef.cangku_root_url)
-      
-      logging.info(f"logging cangku, title: {driver.title}")
-      logging.info(f"current url: {driver.current_url}")
+  async def GuaranteeCangkuLogin(context: BrowserContext) -> Page:
+    page = await context.new_page()
     
-      if not driver.current_url.startswith(f"{CangkuDef.cangku_root_url}/login"):
+    while True:
+      await page.goto(CangkuDef.cangku_root_url)
+      
+      logging.info(f"logging cangku, title: {await page.title()}")
+      logging.info(f"current url: {page.url}")
+    
+      if not page.url.startswith(f"{CangkuDef.cangku_root_url}/login"):
         break
 
       logging.info("wait for login, press enter after login")
-      input()
+      input()  # 使用阻塞式input，符合原有逻辑
 
     logging.info("login success")
+    await page.close()

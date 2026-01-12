@@ -1,6 +1,7 @@
 
 import os, sys
-from playwright.async_api import PlaywrightContextManager, BrowserContext
+from playwright.async_api import BrowserContext, ProxySettings
+from playwright.async_api._generated import Playwright as AsyncPlaywright
 
 _file_dir = os.path.dirname(os.path.dirname(__file__))
 
@@ -13,8 +14,8 @@ def GetBrowserCreateParam():
   }
   return extra_param
 
-async def GetWrapPlaywrightBrowserContext(p: PlaywrightContextManager) -> BrowserContext:
-  return await p.chromium.launch_persistent_context(**GetBrowserCreateParam())
+async def GetWrapPlaywrightBrowserContext(p: AsyncPlaywright, proxy_settings: ProxySettings=None) -> BrowserContext:
+  return await p.chromium.launch_persistent_context(**GetBrowserCreateParam(), proxy=proxy_settings)
 
 # def GetDefaultSyncPlaywrightBrowser(p: "PlaywrightContextManager"):
 #   return p.chromium.launch(**GetBrowserCreateParam())
